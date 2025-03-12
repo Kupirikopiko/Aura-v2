@@ -1,74 +1,145 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
+const { width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
+import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { Image } from "react-native";
+import ViewChanger from "@/components/viewChanger";
+import { useAnimatedRef, useSharedValue, useAnimatedStyle, interpolate, Extrapolate, useAnimatedScrollHandler, withTiming } from "react-native-reanimated"
+import Animated from "react-native-reanimated";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const Ground = require("@/assets/images/ground.png")
+const MoonCloud = require("@/assets/images/moon-cloud.png")
+const Cloud = require("@/assets/images/cloud.png")
 
 export default function HomeScreen() {
+  const scrollRef = useAnimatedRef<Animated.ScrollView>()
+
+  //getting the current time
+  const currentTime = {
+    currentHour: new Date().getHours(),
+    currentMinute: new Date().getMinutes().toString().padStart(2, "0"),
+    currentSecond: new Date().getSeconds()
+  }
+  const { currentHour, currentMinute, currentSecond } = currentTime;
+  const parsedCurrentMinute = parseInt(currentMinute)
+
+  const sleepTime = {
+    //22 being 10PM
+    sleepHours: Math.abs(currentHour - 22)
+  }
+  const { sleepHours } = sleepTime;
+
+  const scrollY = useSharedValue(0); //initial scroll position
+
+  //opacity
+  const opacity = useSharedValue(1); //initial
+
+  const animatedOpacity = useAnimatedStyle(()=>{
+    return{
+      opacity: interpolate (scrollY.value, [0,120],[1,0], "clamp")
+    }
+  })
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <>
+      <View style={styles.body}>
+        {/* section 1 */}
+        <View>
+          <Image source={MoonCloud} style={{ position:"absolute", top:50, left: -50}}/>
+          <Image source={Cloud} style={{ position:"absolute", top:130, right: -50}}/>
+          <View style={styles.headerContainer}>
+            {sleepHours > 1 ? (
+              <Text style={[styles.text]}> Time for bed in{'\n'}{sleepHours} hours</Text>
+            ) : (
+              <Text style={[styles.text]}> Time for bed in{'\n'}{sleepHours} hour</Text>
+            )}
+          </View>
+        </View>
+
+        {/* section 2 */}
+        <Animated.ScrollView  //reanimated ver of scrollview
+          ref={scrollRef} //reference point for the animated scroll view
+          scrollEventThrottle={16}
+          onScroll={useAnimatedScrollHandler(e => {
+            scrollY.value = e.contentOffset.y //gives current vertical scroll position and updaes initial position
+          })} //basically watches the scroll
+          style={{
+            flexDirection: "column",
+            zIndex: 2,
+            position: "absolute",
+            height: height,
+          }}
+        >
+          <Animated.View style={[{
+            height: 700,
+            justifyContent: "center",
+            alignItems: "center"
+          }, animatedOpacity]}>
+            <Link href="/timer" style={{
+              textAlign: "center",
+              width: 100,
+              color: "white",
+              backgroundColor: "#7E4AB7",
+              padding: 10,
+              borderRadius: 20,
+              shadowColor: "#000",
+              shadowOffset: {width: 0, height: 3},
+              shadowOpacity: 0.3,
+              shadowRadius: 4
+            }}>Sleep</Link>
+          </Animated.View>
+
+          <View style={{
+            flexDirection: "column",
+          }}>
+            <View style={{
+              height: 5,
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "baseline",
+              marginBottom: -40
+
+            }}>
+              <Image source={Ground} />
+            </View>
+            <View style={{
+              backgroundColor: "#7E4AB7",
+              width: width,
+              height: 850,
+              padding: 10,
+              zIndex: 5
+            }}>
+              <ViewChanger />
+            </View>
+          </View>
+        </Animated.ScrollView>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  body: {
+    backgroundColor: "#261A33",
+    width: width,
+    height: height,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+
+  text: {
+    color: "#fff",
+    fontSize: 28,
+    textAlign: "center",
+    fontWeight: "bold",
+    lineHeight: 40
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+
+  headerContainer: {
+    height: height - 300,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
   },
-});
+})
+
