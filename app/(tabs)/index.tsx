@@ -107,7 +107,7 @@ export default function HomeScreen() {
             <View style={{
               backgroundColor: "#7E4AB7",
               width: width,
-              height: 850,
+              height: 900,
               padding: 10,
               zIndex: 5
             }}>

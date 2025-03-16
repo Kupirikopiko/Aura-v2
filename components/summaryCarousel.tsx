@@ -10,6 +10,7 @@ import { Image } from "react-native";
 import { StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { ImageBackground } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const StarFallImage = require("@/assets/images/Starfall.png")
@@ -30,7 +31,7 @@ const SummaryCarousel = () => {
 
     const WeeklyLog = ({ logs }: any) => {
         return (
-            <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, padding: 10 }}>
+            <View style={{ flexDirection: "row", gap: 10 }}>
                 {logs.map((logged: any, index: number) => (
                     <View
                         key={index}
@@ -45,29 +46,29 @@ const SummaryCarousel = () => {
             </View>
         );
     };
-    const userLogs = [true, false, true, false, false, true, false];
+    const userLogs = [true, true, true, false, true, true, false];
 
 
     // Card component
     const Card1 = () => {
         return (
             <View style={styles.cardContainer}>
-            <Card style={styles.card}>
-                <ImageBackground 
-                    source={CardBG} 
-                    style={styles.imageBackground} 
-                    imageStyle={{ borderRadius: 10 }} // Ensures image follows card shape
-                    resizeMode="cover"
-                >
-                    <View style={styles.content}>
-                        <Ionicons name="star" color={"#FFE59B"} size={24} />
-                        <Text style={styles.text}>
-                            You've been feeling more well-rested than last week
-                        </Text>
-                    </View>
-                </ImageBackground>
-            </Card>
-        </View>
+                <Card style={styles.card}>
+                    <ImageBackground
+                        source={CardBG}
+                        style={styles.imageBackground}
+                        imageStyle={{ borderRadius: 10 }} // Ensures image follows card shape
+                        resizeMode="cover"
+                    >
+                        <View style={styles.content}>
+                            <Ionicons name="star" color={"#FFE59B"} size={24} />
+                            <Text style={[styles.text, { fontWeight: "bold" }]}>
+                                You've been feeling {<Text style={{ color: "#BB7BFF" }}>more well-rested than</Text>} last week
+                            </Text>
+                        </View>
+                    </ImageBackground>
+                </Card>
+            </View>
         );
     };
 
@@ -75,10 +76,12 @@ const SummaryCarousel = () => {
         return (
             <View style={styles.cardContainer}>
                 <Card style={styles.card}>
-                    <Text style={{ color: "#fff" }}>You logged feeling...</Text>
-                    <Text style={{ color: "#fff" }}>Well-rested</Text>
-                    <WeeklyLog logs={userLogs} />
-                    <Text style={{ color: "#fff" }}>on 5/7 days</Text>
+                    <View style={[styles.content, { flexDirection: "column", gap: 10 }]}>
+                        <Text style={{ color: "#fff" }}>You logged feeling...</Text>
+                        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 20 }}>Well-rested</Text>
+                        <WeeklyLog logs={userLogs} />
+                        <Text style={{ color: "#fff" }}>on 5/7 days</Text>
+                    </View>
                 </Card>
             </View>
         );
@@ -88,8 +91,12 @@ const SummaryCarousel = () => {
         return (
             <View style={styles.cardContainer}>
                 <Card style={styles.card}>
-                    <Image source={StarFallImage} style={styles.image} />
-                    <Text style={{ color: "#fff" }}>Good Job! Let's keep it up!</Text>
+                    <LinearGradient
+                        style={[styles.content, {}]}
+                        colors={['#922CFF', '#FFC19B']}>
+                        <Image source={StarFallImage} style={styles.image} />
+                        <Text style={{ color: "#fff", fontWeight: "bold" }}>Good Job! Let's keep it up!</Text>
+                    </LinearGradient>
                 </Card>
             </View>
         );
@@ -99,10 +106,22 @@ const SummaryCarousel = () => {
         return (
             <View style={styles.cardContainer}>
                 <Card style={styles.card}>
-                    <Text style={{ color: "#fff" }}>We've updated your features to better support your sleep goals!</Text>
-                    <Text style={{ color: "#fff" }}>Features can always be customized through the settings</Text>
+                    <View style={[styles.content, { flexDirection: "column", gap:15 }]}>
+                            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18, paddingRight: 80, lineHeight: 25 }}>
+                                We've updated your features to better support your sleep goals!
+                            </Text>
+                            <View style={{ flexDirection:"row", gap:10, paddingRight: 50 }}>
+                                <Ionicons name="information-circle"
+                                color={"#ECCAFF"}
+                                size={15}/>
+                                                        <Text style={{ color: "#ECCAFF" }}>
+                                Features can always be customized through the settings
+                                                        </Text>
+                            </View>
+                    </View>
                 </Card>
             </View>
+
         );
     };
 
@@ -151,7 +170,7 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         borderRadius: 10,
-        overflow: "hidden", 
+        overflow: "hidden",
         backgroundColor: "#7034A3",
     },
     imageBackground: {
@@ -164,6 +183,7 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         padding: 20,
+        justifyContent: "center"
     },
     text: {
         color: "#fff",

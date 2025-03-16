@@ -26,7 +26,8 @@ export default function Summaries() {
 
   return (
     <>
-      <View style={styles.container}>
+      {/* Chart */}
+      <View style={[styles.container, {paddingBottom: 40}]}>
         <BarChart
           width={350}
           barStyle={{
@@ -56,10 +57,12 @@ export default function Summaries() {
         />
       </View>
 
-      <View>
+      {/* Carousel */}
+      <View style={{ paddingBottom: 10 }}>
         <Carousel />
       </View>
 
+      {/* Cards */}
       <View style={styles.grid}>
         <CardSummary style={styles.card1}>
           <Text style={{
@@ -94,7 +97,6 @@ export default function Summaries() {
           />
 
         </CardSummary>
-
         <View style={styles.grid_container_2}>
           <CardSummary style={styles.card2}>
             <Image source={HappyEmojiImage}
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   grid: {
     display: "flex",
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 2,
     backgroundColor: "#3D1C59",
-    padding:10
+    padding: 10
   },
   card2: {
     height: 120,
@@ -153,12 +155,12 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: "center",
     backgroundColor: "#3D1C59",
-    padding:10
+    padding: 10
   },
   card3: {
     height: 70,
     backgroundColor: "#3D1C59",
-    padding:10
+    padding: 10
 
   },
   cardText: {
